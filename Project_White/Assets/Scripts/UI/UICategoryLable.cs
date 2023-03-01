@@ -7,7 +7,6 @@ using TMPro;
 namespace RPG.UI {
     public class UICategoryLable : MonoBehaviour {
 
-
         [SerializeField] TextMeshProUGUI _TMPro;
         [SerializeField] Image _Background;
 

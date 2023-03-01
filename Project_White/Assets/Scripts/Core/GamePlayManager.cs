@@ -41,56 +41,36 @@ namespace RPG.Core {
         // - Listeners for this
         //      -Player move
 
-
-
-
         /*---Private---*/
         private void Start() {
-
             playerController = FindObjectOfType<PlayerController>();
-            playerVisuals = PlayerVisuals.PlayerVisualsInstance;
-            //Listen to
-            //Player move
+            playerVisuals = PlayerVisuals.Instance;
             GameBroadcast.CharacterMoved.ListenToSpecific(UpdatePlayerOutput_OnMoved, playerController.Character);
             GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, playerController.Character.Location);
-
             UpdatePlayerOutput();
         }
 
-        //Update player output
-        //Character Move
-        private void UpdatePlayerOutput_OnMoved(Character character) {
-
+        private void UpdatePlayerOutput_OnMoved(Character character, World.AbstractArea area) {
+            GameBroadcast.AreaUpdate.IgnoreSpecific(UpdatePlayerOutput_OnAreaUpdate, area);
             GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, playerController.Character.Location);
             UpdatePlayerOutput(); 
         }
-        //Area Update
+
         private void UpdatePlayerOutput_OnAreaUpdate(World.AbstractArea area) {
-            
-            if(playerController.Character.Location != area) { 
-
-                GameBroadcast.AreaUpdate.IgnoreSpecific(UpdatePlayerOutput_OnAreaUpdate, playerController.Character.Location);
-            } else {
-
-                UpdatePlayerOutput();
-            }
+            UpdatePlayerOutput();
         }
         
         private void UpdatePlayerOutput() {
-
             UpdatePlayerVisuals();
             UpdatePlayerChoices();
         }
         private void UpdatePlayerVisuals() {
-
             //Background
             playerVisuals.UpdatePlayerVisuals(playerController.Character);
         }
 
         private void UpdatePlayerChoices() {
-
             List<Task.ITask> tasks = new(Task.TaskHandler.GetTasks(playerController.Character.Location, playerController.Character));
-
             playerVisuals.DisplayChoices(playerController, tasks.Select(x => x.GetDisplayInfo(playerController.Character)));
         }
 

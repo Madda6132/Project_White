@@ -45,7 +45,7 @@ namespace RPG.Task {
 
         public abstract void Perform(IController controler);
 
-        public abstract bool Requirements(Character requestingCharacter);
+        public abstract bool FulfilledRequirements(Character requestingCharacter);
 
         public void AddToPath(string path) => Path = $"{path}/{Path}";
 
@@ -53,10 +53,10 @@ namespace RPG.Task {
 
             if(_UIButtonManager != null) {
 
-                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, Requirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _UIButtonManager);
+                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _UIButtonManager);
             } else {
 
-                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, Requirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _ButtonType);
+                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _ButtonType);
             }
 
         }

@@ -9,25 +9,13 @@ namespace RPG.Creature {
     [RequireComponent(typeof(Character))]
     public class PlayerController : MonoBehaviour, IController, ITaskOptions {
 
-        public Character Character { get; private set; }
-
-        public string TaskPath => Character.Name;
-
         [SerializeField] AbstractArea testTarget;
 
-
-        public void MoveToArea(AbstractArea area) {
-
-            if(!Character.Location.isAreaConnected(area)) return;
-            Character.MoveCharacter(area);
-
-        }
+        public Character Character { get; private set; }
+        public string TaskPath => Character.Name;
 
 
-        
         public IEnumerable<ITask> GetTaskOptions(Character askingCharacter) {
-
-            
             //task.AddPath(Character.Name);
             if(false) yield return null;
 
@@ -35,15 +23,12 @@ namespace RPG.Creature {
 
         /*---Private---*/
 
-
-
         private void Awake() {
-
             Character = GetComponent<Character>();
-            
         }
 
         //Commented out sections are mostly for testing
+        #region Test
 
         Queue<TaskMove> test = new();
         float _Time = 0;
@@ -64,6 +49,7 @@ namespace RPG.Creature {
             }
         }
 
+        #endregion
     }
 
 }

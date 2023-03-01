@@ -11,7 +11,7 @@ using RPG.Task.Actions;
 namespace RPG.Core {
     public class AreaHandler : MonoBehaviour {
 
-        public static AreaHandler AreaHandlerInstance { 
+        public static AreaHandler Instance { 
             get {
                 if(_Instance == null) { Debug.LogError("AreaHandler Instance is null. Instantiate an AreaHandler. AreaHandler should be in Core prefab"); }
                 return _Instance;
@@ -55,7 +55,7 @@ namespace RPG.Core {
                 return;
             }
 
-            AreaHandlerInstance = this;
+            _Instance = this;
         }
 
         /// <summary>

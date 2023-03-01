@@ -34,6 +34,6 @@ namespace RPG.Task {
             Debug.Log("ZZZzz...");
         }
 
-        public override bool Requirements(Character requestingCharacter) => true;
+        public override bool FulfilledRequirements(Character requestingCharacter) => true;
     }
 }

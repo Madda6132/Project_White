@@ -5,7 +5,6 @@ using UnityEngine;
 namespace RPG.World {
     public class AreaSettlement : AbstractMapArea {
 
-
         /*---Protected---*/
 
         protected override void Awake() {

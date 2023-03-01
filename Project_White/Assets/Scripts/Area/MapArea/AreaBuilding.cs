@@ -7,9 +7,7 @@ namespace RPG.World {
     public class AreaBuilding : AbstractMapArea {
 
         [SerializeField] AbstractExploreArea startArea;
-        
         [SerializeField] Character owner;
-
 
         /*---Protected---*/
 
@@ -19,11 +17,7 @@ namespace RPG.World {
 
         protected override void ExtraStart() {
             base.ExtraStart();
-            conectedAreas.Add(startArea);
-
-            AbstractArea parentArea = ParentArea;
-            if(parentArea) conectedAreas.Add(parentArea);
-
+            AddAreaConnection(startArea);
         }
     }
 }

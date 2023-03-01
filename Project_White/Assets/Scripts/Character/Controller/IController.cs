@@ -7,9 +7,6 @@ namespace RPG.Creature {
     public interface IController {
 
         public Character Character { get; }
-
-        public void MoveToArea(AbstractArea area);
-
     }
 
 }

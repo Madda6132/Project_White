@@ -30,26 +30,14 @@ namespace RPG.Task {
         //Talk to player
 
         public void StartTask(ITask task) {
-
             Debug.Log("WOw a task! It was " + task.DisplayName);
             task.Perform(Controller);
         }
 
-        public static IEnumerable<ITask> GetTasks(World.AbstractArea area, Creature.Character requestingCharacter) {
-
-            //Get tasks from Area
+        public static IEnumerable<ITask> GetTasks(World.AbstractArea area, Character requestingCharacter) {
             foreach (var task in area.GetTaskOptions(requestingCharacter)) {
                 yield return task;
             }
-
-            //Get Tasks from creatures
-            foreach (var character in area.Characters) {
-                foreach (var task in character.GetTaskOptions(requestingCharacter)) {
-                    yield return task;
-                }
-            }
-
         }
-
     }
 }

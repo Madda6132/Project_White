@@ -15,7 +15,6 @@ namespace RPG.UI {
         [SerializeField] Transform _Layer_Middle;
         [SerializeField] Transform _Layer_Front;
 
-
         public Button Button => _Button;
         public TextMeshProUGUI TMPro  => _TMPro;
         public Image Frame => _Frame;

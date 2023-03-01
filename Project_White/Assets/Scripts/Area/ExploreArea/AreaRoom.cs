@@ -5,8 +5,6 @@ using UnityEngine;
 namespace RPG.World {
     public class AreaRoom : AbstractExploreArea {
 
-
-
         /*---Protected---*/
 
         protected override void Awake() {

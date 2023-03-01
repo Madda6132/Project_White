@@ -14,16 +14,6 @@ using RPG.UI.Library;
 namespace RPG.Core {
     public class PlayerVisuals : MonoBehaviour {
 
-        public static PlayerVisuals PlayerVisualsInstance {
-            get {
-                if (_Instance == null) { Debug.LogError("PlayerVisuals Instance is null. Instantiate an PlayerVisuals. PlayerVisuals should be in Core prefab"); }
-                return _Instance;
-            }
-            private set {
-                _Instance = value;
-            }
-        }
-
 
         [SerializeField] UILibrary _UILibrary;
 
@@ -64,48 +54,49 @@ namespace RPG.Core {
 
         [SerializeField] UIChoiceList ChoiceList;
 
+        public static PlayerVisuals Instance {
+            get {
+                if (_Instance == null) { Debug.LogError("PlayerVisuals Instance is null. Instantiate an PlayerVisuals. PlayerVisuals should be in Core prefab"); }
+                return _Instance;
+            }
+            private set {
+                _Instance = value;
+            }
+        }
+        public static UILibrary UILibrary => Instance._UILibrary;
+
         Stack<string> categoryStack = new();
         string _CurrentCategory = BASE_CATEGORY;
         const string BASE_CATEGORY = "/";
         Dictionary<string, List<UIButtonManager>> _ButtonCategory = new();
+
         static PlayerVisuals _Instance;
 
-
-
-        public static UILibrary UILibrary => _Instance?._UILibrary;
-
         public void UpdatePlayerVisuals(Character character) {
-
             AbstractArea area = character.Location;
-
             ChangeBackground(area.Background); 
         }
         
 
 
         public static void ButtonCategory_Back() {
-
-            string category = 0 < _Instance.categoryStack.Count ? _Instance.categoryStack.Pop(): BASE_CATEGORY;
+            string category = 0 < Instance.categoryStack.Count ? Instance.categoryStack.Pop(): BASE_CATEGORY;
             ButtonCategory_UpdateCategory(category);
         }
         public static void ButtonCategory_SelectCategory(string category) {
-
-            _Instance.categoryStack.Push(_Instance._CurrentCategory);
+            Instance.categoryStack.Push(Instance._CurrentCategory);
             ButtonCategory_UpdateCategory(category);
         }
 
 
         public void DisplayChoices(IController controller, IEnumerable<DisplayInfo_Button> UIDisplayInfo_ButtonCollection) {
-
-            if (_Instance == null) return;
-
+            if (Instance == null) return;
             //Clear buttons and dictionary
-            var category = _Instance._ButtonCategory;
+            var category = Instance._ButtonCategory;
             foreach (var key in category.Keys) {
                 category[key].ForEach(x => Destroy(x.gameObject));
-                
-            } 
-            _Instance._ButtonCategory.Clear();
+            }
+            Instance._ButtonCategory.Clear();
             //Add Path in list and
             //Remove all Character/Name/ from path
             string removeQuote = $"Character/{controller.Character.Name}";
@@ -115,29 +106,21 @@ namespace RPG.Core {
                 string path = info.Path.Replace(removeQuote, "");
                 taskList.Add(('/' + path, info));
             }
-            
-
             //Sort by name
             taskList.OrderBy(x => x.Path);
-
-
             //For each Category create a Button object
             taskList.ForEach(x => {
-
                 //Buttons for task and more category
                 //Create category's
                 if (!category.ContainsKey(x.Path)) CreateCategory(category, x.Path);
-
                 //Create Button
-                UIButtonManager taskButton = _Instance.ChoiceList.DisplayChoice(x.Info.DisplayName, x.Info.OnClickAction, x.Info.ButtonManager);
-
+                UIButtonManager taskButton = Instance.ChoiceList.DisplayChoice(x.Info.DisplayName, x.Info.OnClickAction, x.Info.ButtonManager);
                 category[x.Path].Add(taskButton);
                 taskButton.gameObject.SetActive(false);
             });
-
             //PROTOTYPE: Add button for back
-            UIButtonManager backButton = _Instance.ChoiceList.DisplayChoice("Back", () => ButtonCategory_Back(), 
-                _Instance._UILibrary.UILibraryButtons.Default_Button);
+            UIButtonManager backButton = Instance.ChoiceList.DisplayChoice("Back", () => ButtonCategory_Back(),
+                Instance._UILibrary.UILibraryButtons.Default_Button);
             backButton.gameObject.SetActive(false);
             foreach (var key in category.Keys) {
 
@@ -145,26 +128,19 @@ namespace RPG.Core {
 
                 category[key].Add(backButton);
             }
-
             //Update buttons
-            ButtonCategory_UpdateCategory(_Instance._CurrentCategory);
+            ButtonCategory_UpdateCategory(Instance._CurrentCategory);
         }
-
 
         /*---Private---*/
         private void Awake() {
-
             if (_Instance != null) {
                 Destroy(this);
                 Debug.LogError("Cant have more than one instance of PlayerVisuals");
                 return;
             }
-
-            PlayerVisualsInstance = this;
-            
-
+            _Instance = this;
         }
-
 
         public void ChangeBackground(Sprite background) {
             Background.sprite = background;
@@ -180,35 +156,24 @@ namespace RPG.Core {
             //If true open that category
 
             //Hide buttons not inside the category
-            _Instance._ButtonCategory[_Instance._CurrentCategory].ForEach(x => x.gameObject.SetActive(false));
+            Instance._ButtonCategory[Instance._CurrentCategory].ForEach(x => x.gameObject.SetActive(false));
 
-            if (_Instance._ButtonCategory.ContainsKey(categoryPath)) {
+            if (Instance._ButtonCategory.ContainsKey(categoryPath)) {
 
                 //Change the Category label
                 Debug.Log("Category: " + categoryPath);
-                
-                _Instance._CurrentCategory = categoryPath;
+
+                Instance._CurrentCategory = categoryPath;
             } else {
                 //Reset category selection 
                 Debug.Log("Category doesn't exist");
-                _Instance._CurrentCategory = BASE_CATEGORY;
-                _Instance.categoryStack.Clear();
+                Instance._CurrentCategory = BASE_CATEGORY;
+                Instance.categoryStack.Clear();
             }
             //Button list -> Category name at the top 
-            _Instance.ChoiceList.DisplayLables(_Instance._CurrentCategory);
+            Instance.ChoiceList.DisplayLables(Instance._CurrentCategory);
             //Show Buttons
-            _Instance._ButtonCategory[_Instance._CurrentCategory].ForEach(x => x.gameObject.SetActive(true));
-        }
-
-
-        private void CharacterEntered(Character character) {
-            Debug.Log(character.Name + " Entered :)");
-            //Refresh task options
-        }
-
-        private void CharacterLeft(Character character) {
-            Debug.Log(character.Name + " Left :(");
-            //Refresh task options
+            Instance._ButtonCategory[Instance._CurrentCategory].ForEach(x => x.gameObject.SetActive(true));
         }
 
         private static void CreateCategory(Dictionary<string, List<UIButtonManager>> category, string path) {
@@ -232,8 +197,8 @@ namespace RPG.Core {
             }
 
             //Create the category button inside the path below targeted path
-            UIButtonManager buttonCategory = _Instance.ChoiceList.DisplayChoice(pathDetails[pathDetails.Length - 2],
-                () => ButtonCategory_SelectCategory(path), _Instance._UILibrary.UILibraryButtons.Category_Button);
+            UIButtonManager buttonCategory = Instance.ChoiceList.DisplayChoice(pathDetails[pathDetails.Length - 2],
+                () => ButtonCategory_SelectCategory(path), Instance._UILibrary.UILibraryButtons.Category_Button);
 
             category[newCategory].Add(buttonCategory);
             buttonCategory.gameObject.SetActive(false);
@@ -242,7 +207,7 @@ namespace RPG.Core {
 
         private static UIButtonManager CreateButton(Transform parent, string displayText, UnityAction action, UIButtonManager buttonManager = null) {
 
-            if (buttonManager == null) buttonManager = _Instance._UILibrary.UILibraryButtons.Default_Button;
+            if (buttonManager == null) buttonManager = Instance._UILibrary.UILibraryButtons.Default_Button;
 
             UIButtonManager button = Instantiate(buttonManager, parent);
             button.TMPro.text = displayText;
@@ -250,6 +215,5 @@ namespace RPG.Core {
 
             return button;
         }
-
     }
 }

@@ -7,9 +7,12 @@ namespace RPG.World {
     
     public abstract class AbstractArea : MonoBehaviour, ITaskOptions {
 
+        [SerializeField] protected Transform AreasContainer;
+        [SerializeField] protected Transform InteractContainer;
         [SerializeField] string _AreaName = "";
         [SerializeField] Sprite _Background;
 
+        public string TaskPath => _AreaName;
         public string AreaName {
             get => _AreaName;
             protected set => _AreaName = value; }
@@ -17,15 +20,14 @@ namespace RPG.World {
             get => _Background;
             protected set => _Background = value;
         }
-        public float AreaScale {
-            get => _AreaScale;
-            protected set => _AreaScale = value;
-        }
+        public float TravelMultiplier {
+            get => _TravelMultiplier;
+            protected set => _TravelMultiplier = value;
+        } 
         public IEnumerable<AbstractArea> WorldLocation {
             get {
-                AbstractArea parentArea = ParentArea;
-                if (parentArea) {
-                    foreach (var area in parentArea.WorldLocation) {
+                if (ParentArea) {
+                    foreach (var area in ParentArea.WorldLocation) {
                         yield return area;
                     }
                 }
@@ -33,107 +35,58 @@ namespace RPG.World {
                 yield return this;
                 }
         }
-        public AbstractArea ParentArea {
-            get {
-                Transform parent = transform.parent;
-                if (parent != null && parent.TryGetComponent(out AbstractArea area)) {
-                    return area;
-                }
-
-                return null;
-            }
-        }
+        public AbstractArea ParentArea => _ParentArea ?? FindAndSetParentArea();
         public AbstractArea[] AreaConnections => conectedAreas.ToArray();
-        public IEnumerable<Character> Characters => characters;
+        
+        protected float _TravelMultiplier = 1f;
 
-        public string TaskPath => _AreaName;
+        List<AbstractArea> conectedAreas = new();
+        AbstractArea _ParentArea;
+        Tasks.AreaTaskCollector _TaskCollector;
 
-        protected float _AreaScale = 1f;
-        protected List<AbstractArea> conectedAreas = new();
-        protected List<Character> characters = new();
-
-        //List<InteractEvents> interactEvents = new();
+        //Get tags. Such as public, Forest, Mountain...
 
         public virtual IEnumerable<ITask> GetTaskOptions(Character requestingCharacter) {
-
-
-            foreach (var connection in AreaConnections) {
-                yield return Task.Actions.TaskActionLibrary.TravelTask(this, connection);
-            }
-
-            foreach (var character in characters) {
-                foreach (var task in character.GetTaskOptions(requestingCharacter)) {
-                    yield return task;
-                }
+            foreach (var task in _TaskCollector.GetTaskOptions(requestingCharacter)) {
+                yield return task;
             }
         }
 
-
+        public TComponent[] GetComponentsInInteract<TComponent>() where TComponent : class {
+            return InteractContainer.GetComponentsInChildren<TComponent>();
+        }
 
         public int TravelTimeToArea(AbstractArea toArea) {
-            return (int)_AreaScale;
+            return (int)_TravelMultiplier;
         }
 
-
-
-        public TaskMove CreateMoveTask(AbstractArea area) { 
-            
-            if(!conectedAreas.Contains(area)) return null;
-
-            return new TaskMove(area, (int)_AreaScale); 
+        public void AddObjectToInteract(Transform objectTransform) {
+            objectTransform.transform.SetParent(InteractContainer);
+            Core.GameBroadcast.AreaUpdate.Broadcast(this);
         }
 
-        public virtual bool isAreaConnected(AbstractArea moveToArea) => conectedAreas.Contains(moveToArea);
-
-
-
-        public void CharacterEntered(Character character) {
-
-            if (!characters.Contains(character)) {
-                
-                characters.Add(character);
-                Core.GameBroadcast.CharacterMoved.ListenToSpecific(CharacterLeft, character);
-                Core.GameBroadcast.AreaUpdate.Broadcast(this);
-            }
-        
+        public void AddAreaConnection(AbstractArea area) {
+            conectedAreas.Add(area);
         }
-
-        //Characters actions
-        //Move Character here
-        //Get Interactions
-        //Get tags
-        //Travel Time Multiplier
-
-        //Areas
-        //Connecting other Areas?
 
         /*---Protected---*/
-
-        protected void CharacterLeft(Character character) { 
-
-            if (character.Location != this && characters.Contains(character)) { 
-                characters.Remove(character);
-                Core.GameBroadcast.CharacterMoved.IgnoreSpecific(CharacterLeft, character);
-            }
-        }
-
 
         /*---Private---*/
 
         protected virtual void Awake() {
-
-            //Get characters
-            Character[] character = GetComponentsInChildren<Character>();
-            foreach (var person in character) {
-
-                characters.Add(person);
-
-                //Listen to characters
-                Core.GameBroadcast.CharacterMoved.ListenToSpecific(CharacterLeft, person);
-            }
-
+            _TaskCollector = new(this, TaskPath);
         }
 
+        private AbstractArea FindAndSetParentArea() {
+            Transform parentTransform = transform.parent;
+            while (parentTransform != null) {
+                if (parentTransform.TryGetComponent(out AbstractArea foundArea)) {
+                    _ParentArea = foundArea;
+                    break;
+                }
+                parentTransform = parentTransform.parent;
+            }
+            return _ParentArea;
+        }
     }
-
 }

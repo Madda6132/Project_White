@@ -12,11 +12,6 @@ namespace RPG.Creature {
         //Memory of Characters
         Dictionary<Character, AbstractArea> memoryOfCharacters = new();
 
-
-        public void MoveToArea(AbstractArea area) {
-            throw new System.NotImplementedException();
-        }
-
         //Relationship Meter (Player)?
         //  Stranger / Acquaintance / Friends / Close Friends / Couple / Married?
 
@@ -30,12 +25,9 @@ namespace RPG.Creature {
         //  Judging     -Tactics-   Prospecting
         //  Assertive   -Identity-  Turbulent
 
-
-
         /*---Private---*/
 
         private void Awake() {
-
             Character = GetComponent<Character>();
         }
 
