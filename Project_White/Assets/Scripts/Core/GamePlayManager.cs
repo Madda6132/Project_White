@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.Creature;
@@ -7,9 +6,8 @@ using System.Linq;
 namespace RPG.Core {
     public class GamePlayManager : MonoBehaviour {
 
-        PlayerController playerController;
+        PlayerController _playerController;
 
-        PlayerVisuals playerVisuals;
 
         //Game state - Depending on the player
         //States
@@ -33,7 +31,7 @@ namespace RPG.Core {
         //Save and load game
 
         //Fix startup method
-        // - Choises
+        // - Choices
         // - Player Visual
         //      - Background image
         // - TimeManager
@@ -43,16 +41,15 @@ namespace RPG.Core {
 
         /*---Private---*/
         private void Start() {
-            playerController = FindObjectOfType<PlayerController>();
-            playerVisuals = PlayerVisuals.Instance;
-            GameBroadcast.CharacterMoved.ListenToSpecific(UpdatePlayerOutput_OnMoved, playerController.Character);
-            GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, playerController.Character.Location);
+            _playerController = FindObjectOfType<PlayerController>();
+            GameBroadcast.CharacterMoved.ListenToSpecific(UpdatePlayerOutput_OnMoved, _playerController.Character);
+            GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, _playerController.Character.Location);
             UpdatePlayerOutput();
         }
 
         private void UpdatePlayerOutput_OnMoved(Character character, World.AbstractArea area) {
             GameBroadcast.AreaUpdate.IgnoreSpecific(UpdatePlayerOutput_OnAreaUpdate, area);
-            GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, playerController.Character.Location);
+            GameBroadcast.AreaUpdate.ListenToSpecific(UpdatePlayerOutput_OnAreaUpdate, _playerController.Character.Location);
             UpdatePlayerOutput(); 
         }
 
@@ -66,12 +63,12 @@ namespace RPG.Core {
         }
         private void UpdatePlayerVisuals() {
             //Background
-            playerVisuals.UpdatePlayerVisuals(playerController.Character);
+            PlayerVisuals.UpdatePlayerVisuals(_playerController.Character);
         }
 
         private void UpdatePlayerChoices() {
-            List<Task.ITask> tasks = new(Task.TaskHandler.GetTasks(playerController.Character.Location, playerController.Character));
-            playerVisuals.DisplayChoices(playerController, tasks.Select(x => x.GetDisplayInfo(playerController.Character)));
+            List<Task.ITask> tasks = new(Task.TaskHandler.GetTasks(_playerController.Character.Location, _playerController.Character));
+            PlayerVisuals.DisplayChoices(_playerController, tasks.Select(x => x.GetDisplayInfo(_playerController.Character)));
         }
 
     }

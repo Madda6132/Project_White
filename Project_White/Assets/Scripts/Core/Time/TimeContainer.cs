@@ -1,24 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace RPG.Core.Time {
-    public struct TimeContainer {
+    public readonly struct TimeContainer {
 
-        int _Minutes;
-        int _Hours;
-        int _MinutesPast;
-        public TimeContainer(int Hours, int Minutes, int MinutesPast) {
-            this._Hours = Hours;
-            this._Minutes = Minutes;
-            this._MinutesPast = MinutesPast;
+        readonly int _minutes;
+        readonly int _hours;
+        readonly int _minutesPast;
+        
+        public TimeContainer(int hours, int minutes, int minutesPast) {
+            this._hours = hours;
+            this._minutes = minutes;
+            this._minutesPast = minutesPast;
         }
 
-        public int TimePast => _MinutesPast;
+        public int TimePast => _minutesPast;
 
-        public string Time => string.Format("{0:00}:{1:00}", _Hours, _Minutes);
+        public string Time => $"{_hours:00}:{_minutes:00}";
 
-        public bool PastTime(int Hours, int Minutes) => (Minutes + Hours * 60) < (_Minutes + _Hours * 60);
+        public bool PastTime(int hours, int minutes) => (minutes + hours * 60) < (_minutes + _hours * 60);
     }
 
 }

@@ -1,55 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using RPG.Utilitys;
+using RPG.Utilities;
 
 namespace RPG.Core {
     public class GameBroadcast : MonoBehaviour {
 
-        BroadcastMessage<Creature.Character, World.AbstractArea> _CharacterMoved;
-        BroadcastMessage<World.AbstractArea> _AreaUpdate;
-        BroadcastMessage<Time.TimeContainer> _TimeChanged;
+        BroadcastMessage<Creature.Character, World.AbstractArea> _characterMoved;
+        BroadcastMessage<World.AbstractArea> _areaUpdate;
+        BroadcastMessage<Time.TimeContainer> _timeChanged;
 
-        public static GameBroadcast Instance {
+        private static GameBroadcast Instance {
             get {
-                if (_Instance == null) { 
+                if (_instance == null) { 
                     Debug.LogError("GameBroadcast Instance is null. Instantiate an GameBroadcast. GameBroadcast should be in Core prefab"); 
                 }
-                return _Instance;
-            }
-            private set {
-                _Instance = value;
+                return _instance;
             }
         }
 
-        static GameBroadcast _Instance;
+        static GameBroadcast _instance;
 
         /// <summary>
         /// Broadcast when a character has moved from an area
         /// </summary>
-        public static BroadcastMessage<Creature.Character, World.AbstractArea> CharacterMoved => Instance._CharacterMoved;
+        public static BroadcastMessage<Creature.Character, World.AbstractArea> CharacterMoved => Instance._characterMoved;
         /// <summary>
         /// Broadcast when a area changes. Such as character enters or leaves
         /// </summary>
-        public static BroadcastMessage<World.AbstractArea> AreaUpdate => Instance._AreaUpdate;
+        public static BroadcastMessage<World.AbstractArea> AreaUpdate => Instance._areaUpdate;
         /// <summary>
         /// Broadcast when the time changes. (Hours, Minutes, Minutes past)
         /// </summary>
-        public static BroadcastMessage<Time.TimeContainer> TimeChanged => Instance._TimeChanged;
+        public static BroadcastMessage<Time.TimeContainer> TimeChanged => Instance._timeChanged;
 
         /*---Private---*/
 
         private void Awake() {
 
-            if (_Instance != null) {
+            if (_instance != null) {
                 Destroy(this);
                 Debug.LogError($"Cant have more than one instance of GameBroadcast");
                 return;
             }
-            _Instance = this;
-            _CharacterMoved = new();
-            _AreaUpdate = new();
-            _TimeChanged = new();
+            _instance = this;
+            _characterMoved = new();
+            _areaUpdate = new();
+            _timeChanged = new();
         }
     }
 }

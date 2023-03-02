@@ -1,53 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace RPG.UI {
-    public struct DisplayInfo_Button {
+    public struct DisplayInfoButton {
 
         public string DisplayName { get; private set; }
         public string Path { get; private set; }
         //Tags? Ex add particle effect, or add a image representing something
         public string Description { get; private set; }
-        public bool isAllowed { get; private set; }
+        public bool IsAllowed { get; private set; }
         public UIButtonManager ButtonManager { get; private set; }
         public UnityAction OnClickAction { get; private set; }
 
-        public DisplayInfo_Button(
-            string DisplayName, 
-            string Path, 
-            string Description, 
+        public DisplayInfoButton(
+            string displayName, 
+            string path, 
+            string description, 
             bool isAllowed,
-            UnityAction OnClickAction,
-            UIButtonManager ButtonManager) {
+            UnityAction onClickAction,
+            UIButtonManager buttonManager) {
 
-                this.DisplayName = DisplayName;
-                this.Path = Path;
-                this.Description = Description;
-                this.isAllowed = isAllowed;
-                this.OnClickAction = OnClickAction;
-                this.ButtonManager = ButtonManager;
+                this.DisplayName = displayName;
+                this.Path = path;
+                this.Description = description;
+                this.IsAllowed = isAllowed;
+                this.OnClickAction = onClickAction;
+                this.ButtonManager = buttonManager;
         }
 
-        public DisplayInfo_Button(
-            string DisplayName,
-            string Path,
-            string Description,
+        public DisplayInfoButton(
+            string displayName,
+            string path,
+            string description,
             bool isAllowed,
-            UnityAction OnClickAction,
-            Library.Buttons.ButtonType ButtonType) {
+            UnityAction onClickAction,
+            Library.Buttons.ButtonType buttonType) {
 
-                this.DisplayName = DisplayName;
-                this.Path = Path;
-                this.Description = Description;
-                this.isAllowed = isAllowed;
-                this.OnClickAction = OnClickAction;
+                this.DisplayName = displayName;
+                this.Path = path;
+                this.Description = description;
+                this.IsAllowed = isAllowed;
+                this.OnClickAction = onClickAction;
 
-                this.ButtonManager = Core.PlayerVisuals.UILibrary.UILibraryButtons.GetButton(ButtonType);
+                this.ButtonManager = Core.PlayerVisuals.UILibrary.UILibraryButtons.GetButton(buttonType);
         }
-
-            
     }
 }
 

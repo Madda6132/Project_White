@@ -1,5 +1,4 @@
 using RPG.Creature;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,23 +11,19 @@ namespace RPG.Task {
         [SerializeField] int sleepCount = 1;
         public string TaskPath => taskPath;
 
-        public IEnumerable<ITask> GetTaskOptions(Character askingCharacter) {
+        public IEnumerable<ITask> GetTaskOptions(Character requestingCharacter) {
 
             for (int i = 0; i < sleepCount; i++) { 
-                ITask task = new TaskSleep(480);
+                ITask task = new TaskSleep();
                 task.AddToPath(taskPath);
                 yield return task;
             }
-
             foreach (var ability in nextAbility) { 
-            foreach (var task in ability.GetTaskOptions(askingCharacter)) {
-                
+                foreach (var task in ability.GetTaskOptions(requestingCharacter)) {
                     task.AddToPath(taskPath);
                     yield return task;
                 }
             }
-
         }
     }
-
 }

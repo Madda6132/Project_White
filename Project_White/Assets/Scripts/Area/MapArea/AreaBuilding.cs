@@ -17,7 +17,7 @@ namespace RPG.World {
 
         protected override void ExtraStart() {
             base.ExtraStart();
-            AddAreaConnection(startArea);
+            AreaConnector.AddAreaConnection(startArea);
         }
     }
 }

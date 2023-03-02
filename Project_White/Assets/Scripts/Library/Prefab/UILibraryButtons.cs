@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.UI.Library.Buttons {
 
@@ -13,48 +10,47 @@ namespace RPG.UI.Library.Buttons {
         CRAFTING
     }
 
-    [CreateAssetMenu(fileName = "UI Button Section", menuName = "RPG/Data/Librarys/UI/Sections", order = 0)]
+    [CreateAssetMenu(fileName = "UI Button Section", menuName = "RPG/Data/Library/UI/Sections", order = 0)]
     public class UILibraryButtons : ScriptableObject {
 
-        [SerializeField] UIButtonManager _Default_Button;
-        [SerializeField] UIButtonManager _Category_Button;
+        [SerializeField] UIButtonManager defaultButton;
+        [SerializeField] UIButtonManager categoryButton;
 
         /// <summary>
         /// Ex Moving
         /// </summary>
-        [SerializeField] UIButtonManager _Travel_Button;
+        [SerializeField] UIButtonManager travelButton;
         /// <summary>
         /// Ex Purchasing or selling
         /// </summary>
-        [SerializeField] UIButtonManager _Business_Button;
-        [SerializeField] UIButtonManager _Crafting_Button;
+        [SerializeField] UIButtonManager businessButton;
+        [SerializeField] UIButtonManager craftingButton;
 
-
-        public UIButtonManager Default_Button => _Default_Button;
-        public UIButtonManager Category_Button => _Category_Button;
-        public UIButtonManager Travel_Button => _Travel_Button;
-        public UIButtonManager Business_Button => _Business_Button; // Ex Purchasing or selling
-        public UIButtonManager Crafting_Button => _Crafting_Button;
+        public UIButtonManager DefaultButton => defaultButton;
+        public UIButtonManager CategoryButton => categoryButton;
+        public UIButtonManager TravelButton => travelButton;
+        public UIButtonManager BusinessButton => businessButton; // Ex Purchasing or selling
+        public UIButtonManager CraftingButton => craftingButton;
 
         public UIButtonManager GetButton(ButtonType buttonType = ButtonType.DEFAULT) {
 
             switch (buttonType) {
 
                 case ButtonType.TRAVEL:
-                    return Travel_Button;
+                    return TravelButton;
 
                 case ButtonType.BUSINESS:
-                    return Business_Button;
+                    return BusinessButton;
 
                 case ButtonType.CATEGORY:
-                    return Category_Button;
+                    return CategoryButton;
 
                 case ButtonType.CRAFTING:
-                    return Crafting_Button;
+                    return CraftingButton;
 
                 default:
                 case ButtonType.DEFAULT:
-                    return Default_Button;
+                    return DefaultButton;
             }
         }
     }

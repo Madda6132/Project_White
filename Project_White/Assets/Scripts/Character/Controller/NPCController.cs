@@ -1,16 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.World;
 
 namespace RPG.Creature {
     [RequireComponent(typeof(Character))]
-    public class NPCController : MonoBehaviour, IController {
+    public class NpcController : MonoBehaviour, IController {
 
         public Character Character { get; private set; }
 
         //Memory of Characters
-        Dictionary<Character, AbstractArea> memoryOfCharacters = new();
+        Dictionary<Character, AbstractArea> _memoryOfCharacters = new();
 
         //Relationship Meter (Player)?
         //  Stranger / Acquaintance / Friends / Close Friends / Couple / Married?

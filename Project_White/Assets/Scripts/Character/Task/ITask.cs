@@ -15,7 +15,7 @@ namespace RPG.Task {
         public void Perform(IController controler);
         public bool FulfilledRequirements(Character requestingCharacter);
         public void Cancel();
-        public UI.DisplayInfo_Button GetDisplayInfo(Character requestingCharacter);
+        public UI.DisplayInfoButton GetDisplayInfo(Character requestingCharacter);
         public void AddToPath(string path);
     }
 }

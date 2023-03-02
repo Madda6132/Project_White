@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -7,21 +5,19 @@ namespace RPG.Items {
     [CreateAssetMenu(fileName = "New Item", menuName = "Create new Item", order = 0)]
     public class Item : ScriptableObject {
 
-        public string Name { get => _ItemName; private set => _ItemName = value; }
-        public string Description { get => _ItemDescription; private set => _ItemDescription = value; }
-        public int Value { get => _Value; private set => _Value = value; }
+        [SerializeField] string itemName = "";
+        [SerializeField] string itemDescription = "";
+        [SerializeField] int value = 1;
+        [SerializeField] string uniqueID;
+        
+        public string Name { get => itemName; private set => itemName = value; }
+        public string Description { get => itemDescription; private set => itemDescription = value; }
+        public int Value { get => value; private set => this.value = value; }
 
-        [SerializeField] string _ItemName = "";
-        [SerializeField] string _ItemDescription = "";
-        [SerializeField] int _Value = 1;
-
-        [SerializeField] string _UniqueID;
 
         private void Awake() {
-
-            if (String.IsNullOrEmpty(_UniqueID)) {
-
-                _UniqueID = Guid.NewGuid().ToString();
+            if (String.IsNullOrEmpty(uniqueID)) {
+                uniqueID = Guid.NewGuid().ToString();
             }
         }
     }

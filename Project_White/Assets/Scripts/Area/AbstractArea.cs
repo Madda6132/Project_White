@@ -7,22 +7,23 @@ namespace RPG.World {
     
     public abstract class AbstractArea : MonoBehaviour, ITaskOptions {
 
-        [SerializeField] protected Transform AreasContainer;
-        [SerializeField] protected Transform InteractContainer;
-        [SerializeField] string _AreaName = "";
-        [SerializeField] Sprite _Background;
+        [SerializeField] protected Transform areasContainer;
+        [SerializeField] protected Transform interactContainer;
+        [SerializeField] Connection.AreaConnector areaConnector;
+        [SerializeField] string areaName = "";
+        [SerializeField] Sprite background;
 
-        public string TaskPath => _AreaName;
+        public string TaskPath => areaName;
         public string AreaName {
-            get => _AreaName;
-            protected set => _AreaName = value; }
+            get => areaName;
+            protected set => areaName = value; }
         public Sprite Background {
-            get => _Background;
-            protected set => _Background = value;
+            get => background;
+            protected set => background = value;
         }
         public float TravelMultiplier {
-            get => _TravelMultiplier;
-            protected set => _TravelMultiplier = value;
+            get => TravelMultiplierValue;
+            protected set => TravelMultiplierValue = value;
         } 
         public IEnumerable<AbstractArea> WorldLocation {
             get {
@@ -35,58 +36,56 @@ namespace RPG.World {
                 yield return this;
                 }
         }
-        public AbstractArea ParentArea => _ParentArea ?? FindAndSetParentArea();
-        public AbstractArea[] AreaConnections => conectedAreas.ToArray();
+        public AbstractArea ParentArea => _parentAreaValue ? _parentAreaValue : FindAndSetParentArea();
+        public Connection.AreaConnector AreaConnector => areaConnector;
         
-        protected float _TravelMultiplier = 1f;
+        protected float TravelMultiplierValue = 1f;
 
-        List<AbstractArea> conectedAreas = new();
-        AbstractArea _ParentArea;
-        Tasks.AreaTaskCollector _TaskCollector;
+        AbstractArea _parentAreaValue;
+        Tasks.AreaTaskCollector _taskCollector;
 
         //Get tags. Such as public, Forest, Mountain...
 
         public virtual IEnumerable<ITask> GetTaskOptions(Character requestingCharacter) {
-            foreach (var task in _TaskCollector.GetTaskOptions(requestingCharacter)) {
+            foreach (var task in _taskCollector.GetTaskOptions(requestingCharacter)) {
                 yield return task;
             }
         }
 
         public TComponent[] GetComponentsInInteract<TComponent>() where TComponent : class {
-            return InteractContainer.GetComponentsInChildren<TComponent>();
+            return interactContainer.GetComponentsInChildren<TComponent>();
         }
 
         public int TravelTimeToArea(AbstractArea toArea) {
-            return (int)_TravelMultiplier;
+            return (int)TravelMultiplierValue;
         }
 
         public void AddObjectToInteract(Transform objectTransform) {
-            objectTransform.transform.SetParent(InteractContainer);
+            objectTransform.transform.SetParent(interactContainer);
             Core.GameBroadcast.AreaUpdate.Broadcast(this);
         }
 
-        public void AddAreaConnection(AbstractArea area) {
-            conectedAreas.Add(area);
-        }
 
         /*---Protected---*/
 
+        protected virtual void Awake() {
+            _taskCollector = new(this, TaskPath);
+            AreaConnector.Awake(this);
+        }
+        
         /*---Private---*/
 
-        protected virtual void Awake() {
-            _TaskCollector = new(this, TaskPath);
-        }
 
         private AbstractArea FindAndSetParentArea() {
             Transform parentTransform = transform.parent;
             while (parentTransform != null) {
                 if (parentTransform.TryGetComponent(out AbstractArea foundArea)) {
-                    _ParentArea = foundArea;
+                    _parentAreaValue = foundArea;
                     break;
                 }
                 parentTransform = parentTransform.parent;
             }
-            return _ParentArea;
+            return _parentAreaValue;
         }
     }
 }

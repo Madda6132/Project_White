@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.World {
-    public class AreaPointOfIntresst : AbstractExploreArea {
+    public class AreaPointOfInterest : AbstractExploreArea {
 
         /*---Protected---*/
-        protected override void Awake() {
-            base.Awake();
-        }
     }
 
 }

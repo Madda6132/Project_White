@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.Core;
@@ -12,7 +11,7 @@ namespace RPG.Creature {
         [SerializeField] AbstractArea testTarget;
 
         public Character Character { get; private set; }
-        public string TaskPath => Character.Name;
+        public string TaskPath => Character.CharacterName;
 
 
         public IEnumerable<ITask> GetTaskOptions(Character askingCharacter) {
@@ -30,11 +29,11 @@ namespace RPG.Creature {
         //Commented out sections are mostly for testing
         #region Test
 
-        Queue<TaskMove> test = new();
-        float _Time = 0;
+        Queue<TaskMove> _test = new();
+        float _time = 0;
 
         private void Start() {
-            test = new(AreaHandler.GetPathFromTo(Character.Location, testTarget));
+            _test = new(AreaHandler.GetPathFromTo(Character.Location, testTarget));
         }
 
 
@@ -42,10 +41,10 @@ namespace RPG.Creature {
 
             //Add Task to move to target
 
-            _Time += Time.deltaTime;
-            if (2f < _Time && 0 < test.Count) {
-                test.Dequeue().Perform(this);
-                _Time -= 2f;
+            _time += Time.deltaTime;
+            if (2f < _time && 0 < _test.Count) {
+                _test.Dequeue().Perform(this);
+                _time -= 2f;
             }
         }
 

@@ -22,15 +22,15 @@ namespace RPG.World {
         }
 
         private void FindAndSetAreaConnections() {
-            if (ParentArea) AddAreaConnection(ParentArea);
-            //Find connections and add them to the connections list
-            for (int i = 0; i < AreasContainer.childCount; i++) {
-                Transform child = AreasContainer.GetChild(i);
-                if (!child.TryGetComponent(out AbstractMapArea mapArea)) { 
-                    continue; 
-                }
-                AddAreaConnection(mapArea);
-            }
+            //if (ParentArea) AddAreaConnection(ParentArea);
+            ////Find connections and add them to the connections list
+            //for (int i = 0; i < AreasContainer.childCount; i++) {
+            //    Transform child = AreasContainer.GetChild(i);
+            //    if (!child.TryGetComponent(out AbstractMapArea mapArea)) { 
+            //        continue; 
+            //    }
+            //    AddAreaConnection(mapArea);
+            //}
         }
     }
 }

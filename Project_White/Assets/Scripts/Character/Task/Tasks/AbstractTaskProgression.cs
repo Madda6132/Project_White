@@ -49,14 +49,14 @@ namespace RPG.Task {
 
         public void AddToPath(string path) => Path = $"{path}/{Path}";
 
-        public DisplayInfo_Button GetDisplayInfo(Character requestingCharacter) {
+        public DisplayInfoButton GetDisplayInfo(Character requestingCharacter) {
 
             if(_UIButtonManager != null) {
 
-                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _UIButtonManager);
+                return new DisplayInfoButton(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _UIButtonManager);
             } else {
 
-                return new DisplayInfo_Button(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _ButtonType);
+                return new DisplayInfoButton(DisplayName, Path, TaskDescription, FulfilledRequirements(requestingCharacter), () => requestingCharacter.TaskHandler.StartTask(this), _ButtonType);
             }
 
         }

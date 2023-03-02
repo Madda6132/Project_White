@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.UI.Library {
-    [CreateAssetMenu(fileName = "UI Library", menuName = "RPG/Data/Librarys/UI/Main Library", order = 0)]
+    [CreateAssetMenu(fileName = "UI Library", menuName = "RPG/Data/Library/UI/Main Library", order = 0)]
     public class UILibrary : ScriptableObject {
 
-        [SerializeField] Buttons.UILibraryButtons _UILibraryButtons;
+        [SerializeField] Buttons.UILibraryButtons uiLibraryButtons;
 
-        public Buttons.UILibraryButtons UILibraryButtons => _UILibraryButtons;
+        public Buttons.UILibraryButtons UILibraryButtons => uiLibraryButtons;
     }
 
 }

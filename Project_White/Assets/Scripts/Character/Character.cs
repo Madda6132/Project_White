@@ -1,26 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.World;
-using RPG.Core;
 using RPG.Task;
-using System;
 
 
 namespace RPG.Creature {
     public class Character : MonoBehaviour, ITaskOptions {
 
-        [SerializeField] string _Name;
+        [SerializeField] string characterName;
         [SerializeField] CharacterDataContainer dataContainer;
 
         public AbstractArea Location => FindParentArea();
-        public string Name { 
-            get => _Name; 
-            private set => _Name = value; }
+        public string CharacterName { 
+            get => characterName; 
+            private set => characterName = value; }
         public string TaskPath => "Character";
         public TaskHandler TaskHandler { 
             get; 
-            private set; }
+            private set; 
+        }
 
 
         //Home

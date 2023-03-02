@@ -1,38 +1,35 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Linq;
 using UnityEngine.Events;
 
 namespace RPG.UI {
     public class UIChoiceList : MonoBehaviour {
 
-        [SerializeField] Transform _ChoicesTransform;
-        [SerializeField] Transform CategoryLabelListTransform;
+        [SerializeField] Transform choicesTransform;
+        [SerializeField] Transform categoryLabelListTransform;
 
-        [SerializeField] UICategoryLable LabelPrefab;
+        [SerializeField] UICategoryLabel labelPrefab;
 
-        public Transform ChoicesTransform => _ChoicesTransform;
+        public Transform ChoicesTransform => choicesTransform;
         public UIButtonManager DisplayChoice(string displayText, UnityAction action, UIButtonManager buttonManager) {
-            UIButtonManager button = Instantiate(buttonManager, _ChoicesTransform);
+            UIButtonManager button = Instantiate(buttonManager, choicesTransform);
             button.TMPro.text = displayText;
             button.Button.onClick.AddListener(action);
             return button;
         }
 
-        public void DisplayLables(string Path) {
+        public void DisplayLabels(string path) {
             //Clear labels
-            for (int i = 0; i < CategoryLabelListTransform.childCount; i++) {
-                Destroy(CategoryLabelListTransform.GetChild(i).gameObject);
+            for (int i = 0; i < categoryLabelListTransform.childCount; i++) {
+                Destroy(categoryLabelListTransform.GetChild(i).gameObject);
             }
             //Separate the Path
             //Display label for each non empty path
-            List<string> lables = new(Path.Split("/", System.StringSplitOptions.RemoveEmptyEntries));
-            lables.Reverse();
-            int Count = lables.Count < 3 ? lables.Count : 3;
-            for (int i = 1; i <= Count; i++) {
-                CreateLabel(lables[Count - i]);
+            List<string> labels = new(path.Split("/", System.StringSplitOptions.RemoveEmptyEntries));
+            labels.Reverse();
+            int count = labels.Count < 3 ? labels.Count : 3;
+            for (int i = 1; i <= count; i++) {
+                CreateLabel(labels[count - i]);
             }
             //Could implement a notifier that more than 3 categories are up
         }
@@ -40,7 +37,7 @@ namespace RPG.UI {
         /*---Private---*/
 
         private void CreateLabel(string labelText) {
-            UICategoryLable label = Instantiate(LabelPrefab, CategoryLabelListTransform);
+            UICategoryLabel label = Instantiate(labelPrefab, categoryLabelListTransform);
             label.TMPro.text = labelText;
         }
     }

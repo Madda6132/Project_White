@@ -1,25 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 
-namespace RPG.Utilitys {
+namespace RPG.Utilities {
     public class BroadcastMessage {
-
-        Dictionary<string, List<Action>> brodcastSpesific = new();
-        List<Action> brodcastAny = new();
+        readonly Dictionary<string, List<Action>> _broadcastSpecific = new();
+        readonly List<Action> _broadcastAny = new();
 
         public void Broadcast(string signal) {
-
             List<Action> list;
-            if (brodcastSpesific.ContainsKey(signal)) {
-                list = new(brodcastSpesific[signal]);
+            if (_broadcastSpecific.ContainsKey(signal)) {
+                list = new(_broadcastSpecific[signal]);
                 list.ForEach(x => x.Invoke());
             }
-
-            list = new(brodcastAny);
-            brodcastAny.ForEach(x => x.Invoke());
-        
+            list = new(_broadcastAny);
+            list.ForEach(x => x.Invoke());
         }
 
         /*---Any---*/
@@ -27,19 +21,17 @@ namespace RPG.Utilitys {
         /// Listen to a any message
         /// </summary>
         /// <param name="listener"> The action to call </param>
-        public void ListenToAny(Action listener) { 
-            
-            if (!brodcastAny.Contains(listener)) 
-                brodcastAny.Add(listener); 
+        public void ListenToAny(Action listener) {
+            if (!_broadcastAny.Contains(listener)) 
+                _broadcastAny.Add(listener); 
         }
         /// <summary>
         /// Ignore any messages
         /// </summary>
         /// <param name="listener"> The action to ignore </param>
-        public void IgnoreAny(Action listener) { 
-            
-            if(brodcastAny.Contains(listener)) 
-                brodcastAny.Add(listener); 
+        public void IgnoreAny(Action listener) {
+            if(_broadcastAny.Contains(listener)) 
+                _broadcastAny.Add(listener); 
         }
 
         /*---Specific---*/
@@ -49,13 +41,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to call </param>
         /// <param name="signal"> Specific message </param>
         public void ListenToSpecific(Action listener, string signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) {
-                brodcastSpesific.Add(signal, new());
+            if (!_broadcastSpecific.ContainsKey(signal)) {
+                _broadcastSpecific.Add(signal, new());
             }
-
-            if (!brodcastSpesific[signal].Contains(listener)) { 
-                brodcastSpesific[signal].Add(listener);
+            if (!_broadcastSpecific[signal].Contains(listener)) { 
+                _broadcastSpecific[signal].Add(listener);
             }
         }
         /// <summary>
@@ -64,14 +54,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to ignore </param>
         /// <param name="signal"> Specific message </param>
         public void IgnoreSpecific(Action listener, string signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) return;
-
-            if (brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Remove(listener);
-
-                if(brodcastSpesific[signal].Count == 0) {
-                    brodcastSpesific.Remove(signal);
+            if (!_broadcastSpecific.ContainsKey(signal)) return;
+            if (_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Remove(listener);
+                if(_broadcastSpecific[signal].Count == 0) {
+                    _broadcastSpecific.Remove(signal);
                 }
             }
         }
@@ -79,21 +66,17 @@ namespace RPG.Utilitys {
 
     public class BroadcastMessage<T> {
 
-        Dictionary<T, List<Action<T>>> brodcastSpesific = new();
-        List<Action<T>> brodcastAny = new();
+        readonly Dictionary<T, List<Action<T>>> _broadcastSpecific = new();
+        readonly List<Action<T>> _broadcastAny = new();
 
         public void Broadcast(T signal) {
-
             List<Action<T>> list;
-            if (brodcastSpesific.ContainsKey(signal)) {
-
-                list = new(brodcastSpesific[signal]);
+            if (_broadcastSpecific.ContainsKey(signal)) {
+                list = new(_broadcastSpecific[signal]);
                 list.ForEach(x => x.Invoke(signal));
             }
-
-            list = new(brodcastAny);
+            list = new(_broadcastAny);
             list.ForEach(x => x.Invoke(signal));
-
         }
 
         /*---Any---*/
@@ -102,18 +85,16 @@ namespace RPG.Utilitys {
         /// </summary>
         /// <param name="listener"> The action to call </param>
         public void ListenToAny(Action<T> listener) {
-
-            if (!brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (!_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
         /// <summary>
         /// Ignore any messages
         /// </summary>
         /// <param name="listener"> The action to ignore </param>
         public void IgnoreAny(Action<T> listener) {
-
-            if (brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
 
         /*---Specific---*/
@@ -123,13 +104,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to call </param>
         /// <param name="signal"> Specific message </param>
         public void ListenToSpecific(Action<T> listener, T signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) {
-                brodcastSpesific.Add(signal, new());
+            if (!_broadcastSpecific.ContainsKey(signal)) {
+                _broadcastSpecific.Add(signal, new());
             }
-
-            if (!brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Add(listener);
+            if (!_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Add(listener);
             }
         }
         /// <summary>
@@ -138,14 +117,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to ignore </param>
         /// <param name="signal"> Specific message </param>
         public void IgnoreSpecific(Action<T> listener, T signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) return;
-
-            if (brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Remove(listener);
-
-                if (brodcastSpesific[signal].Count == 0) {
-                    brodcastSpesific.Remove(signal);
+            if (!_broadcastSpecific.ContainsKey(signal)) return;
+            if (_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Remove(listener);
+                if (_broadcastSpecific[signal].Count == 0) {
+                    _broadcastSpecific.Remove(signal);
                 }
             }
         }
@@ -153,21 +129,17 @@ namespace RPG.Utilitys {
 
     public class BroadcastMessage<T1, T2> {
 
-        Dictionary<T1, List<Action<T1, T2>>> brodcastSpesific = new();
-        List<Action<T1, T2>> brodcastAny = new();
+        readonly Dictionary<T1, List<Action<T1, T2>>> _broadcastSpecific = new();
+        readonly List<Action<T1, T2>> _broadcastAny = new();
 
         public void Broadcast(T1 signal1, T2 signal2) {
-
             List<Action<T1, T2>> list;
-            if (brodcastSpesific.ContainsKey(signal1)) {
-
-                list = new(brodcastSpesific[signal1]);
+            if (_broadcastSpecific.ContainsKey(signal1)) {
+                list = new(_broadcastSpecific[signal1]);
                 list.ForEach(x => x.Invoke(signal1, signal2));
             }
-
-            list = new(brodcastAny);
+            list = new(_broadcastAny);
             list.ForEach(x => x.Invoke(signal1, signal2));
-
         }
 
         /*---Any---*/
@@ -176,18 +148,16 @@ namespace RPG.Utilitys {
         /// </summary>
         /// <param name="listener"> The action to call </param>
         public void ListenToAny(Action<T1, T2> listener) {
-
-            if (!brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (!_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
         /// <summary>
         /// Ignore any messages
         /// </summary>
         /// <param name="listener"> The action to ignore </param>
         public void IgnoreAny(Action<T1, T2> listener) {
-
-            if (brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
 
         /*---Specific---*/
@@ -197,13 +167,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to call </param>
         /// <param name="signal"> Specific message </param>
         public void ListenToSpecific(Action<T1, T2> listener, T1 signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) {
-                brodcastSpesific.Add(signal, new());
+            if (!_broadcastSpecific.ContainsKey(signal)) {
+                _broadcastSpecific.Add(signal, new());
             }
-
-            if (!brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Add(listener);
+            if (!_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Add(listener);
             }
         }
         /// <summary>
@@ -212,35 +180,28 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to ignore </param>
         /// <param name="signal"> Specific message </param>
         public void IgnoreSpecific(Action<T1, T2> listener, T1 signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) return;
-
-            if (brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Remove(listener);
-
-                if (brodcastSpesific[signal].Count == 0) {
-                    brodcastSpesific.Remove(signal);
+            if (!_broadcastSpecific.ContainsKey(signal)) return;
+            if (_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Remove(listener);
+                if (_broadcastSpecific[signal].Count == 0) {
+                    _broadcastSpecific.Remove(signal);
                 }
             }
         }
     }
     public class BroadcastMessage<T1, T2, T3> {
 
-        Dictionary<T1, List<Action<T1, T2, T3>>> brodcastSpesific = new();
-        List<Action<T1, T2, T3>> brodcastAny = new();
+        readonly Dictionary<T1, List<Action<T1, T2, T3>>> _broadcastSpecific = new();
+        readonly List<Action<T1, T2, T3>> _broadcastAny = new();
 
         public void Broadcast(T1 signal1, T2 signal2, T3 signal3) {
-
             List<Action<T1, T2, T3>> list;
-            if (brodcastSpesific.ContainsKey(signal1)) {
-
-                list = new(brodcastSpesific[signal1]);
+            if (_broadcastSpecific.ContainsKey(signal1)) {
+                list = new(_broadcastSpecific[signal1]);
                 list.ForEach(x => x.Invoke(signal1, signal2, signal3));
             }
-
-            list = new(brodcastAny);
+            list = new(_broadcastAny);
             list.ForEach(x => x.Invoke(signal1, signal2, signal3));
-
         }
 
         /*---Any---*/
@@ -249,18 +210,16 @@ namespace RPG.Utilitys {
         /// </summary>
         /// <param name="listener"> The action to call </param>
         public void ListenToAny(Action<T1, T2, T3> listener) {
-
-            if (!brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (!_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
         /// <summary>
         /// Ignore any messages
         /// </summary>
         /// <param name="listener"> The action to ignore </param>
         public void IgnoreAny(Action<T1, T2, T3> listener) {
-
-            if (brodcastAny.Contains(listener))
-                brodcastAny.Add(listener);
+            if (_broadcastAny.Contains(listener))
+                _broadcastAny.Add(listener);
         }
 
         /*---Specific---*/
@@ -270,13 +229,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to call </param>
         /// <param name="signal"> Specific message </param>
         public void ListenToSpecific(Action<T1, T2, T3> listener, T1 signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) {
-                brodcastSpesific.Add(signal, new());
+            if (!_broadcastSpecific.ContainsKey(signal)) {
+                _broadcastSpecific.Add(signal, new());
             }
-
-            if (!brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Add(listener);
+            if (!_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Add(listener);
             }
         }
         /// <summary>
@@ -285,14 +242,11 @@ namespace RPG.Utilitys {
         /// <param name="listener"> The action to ignore </param>
         /// <param name="signal"> Specific message </param>
         public void IgnoreSpecific(Action<T1, T2, T3> listener, T1 signal) {
-
-            if (!brodcastSpesific.ContainsKey(signal)) return;
-
-            if (brodcastSpesific[signal].Contains(listener)) {
-                brodcastSpesific[signal].Remove(listener);
-
-                if (brodcastSpesific[signal].Count == 0) {
-                    brodcastSpesific.Remove(signal);
+            if (!_broadcastSpecific.ContainsKey(signal)) return;
+            if (_broadcastSpecific[signal].Contains(listener)) {
+                _broadcastSpecific[signal].Remove(listener);
+                if (_broadcastSpecific[signal].Count == 0) {
+                    _broadcastSpecific.Remove(signal);
                 }
             }
         }

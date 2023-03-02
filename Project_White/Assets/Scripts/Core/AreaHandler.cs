@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.Linq;
 using RPG.Creature;
 using RPG.World;
@@ -13,14 +11,11 @@ namespace RPG.Core {
 
         public static AreaHandler Instance { 
             get {
-                if(_Instance == null) { Debug.LogError("AreaHandler Instance is null. Instantiate an AreaHandler. AreaHandler should be in Core prefab"); }
-                return _Instance;
-            } 
-            private set {
-                _Instance = value;
-            } 
+                if(_instance == null) { Debug.LogError("AreaHandler Instance is null. Instantiate an AreaHandler. AreaHandler should be in Core prefab"); }
+                return _instance;
+            }
         }
-        static AreaHandler _Instance;
+        static AreaHandler _instance;
 
         //Player position display AbstractArea
 
@@ -30,39 +25,41 @@ namespace RPG.Core {
         /// </summary>
         /// <param name="fromCharacter"> Path from this character </param>
         /// <param name="toCharacter"> Target character </param>
-        public static IEnumerable<TaskMove> GetPathFromTo(Character fromCharacter, Character toCharacter) => GetPath(fromCharacter.Location, toCharacter.Location);
+        public static IEnumerable<TaskMove> GetPathFromTo(Character fromCharacter, Character toCharacter) =>
+            GetPath(fromCharacter.Location, toCharacter.Location);
         /// <summary>
         /// Get Path from character to area
         /// </summary>
         /// <param name="fromCharacter"> Path from this character </param>
         /// <param name="toArea"> target area </param>
-        public static IEnumerable<TaskMove> GetPathFromTo(Character fromCharacter, AbstractArea toArea) => GetPath(fromCharacter.Location, toArea);
+        public static IEnumerable<TaskMove> GetPathFromTo(Character fromCharacter, AbstractArea toArea) => 
+            GetPath(fromCharacter.Location, toArea);
         /// <summary>
         /// Get path from area to area
         /// </summary>
         /// <param name="fromArea"> From this path </param>
         /// <param name="toArea"> To this path </param>
-        public static IEnumerable<TaskMove> GetPathFromTo(AbstractArea fromArea, AbstractArea toArea) => GetPath(fromArea, toArea);
-
+        public static IEnumerable<TaskMove> GetPathFromTo(AbstractArea fromArea, AbstractArea toArea) => 
+            GetPath(fromArea, toArea);
 
         /*---Private---*/
 
         private void Awake() {
 
-            if (_Instance != null) {
+            if (_instance != null) {
                 Destroy(this);
                 Debug.LogError("Cant have more than one instance of AreaHandler");
                 return;
             }
 
-            _Instance = this;
+            _instance = this;
         }
 
         /// <summary>
         /// Get the area path to take to get to location
         /// </summary>
-        /// <param name="start"> Path were to start from </param>
-        /// <param name="end"> Path were to end </param>
+        /// <param name="fromArea"> Path were to start from </param>
+        /// <param name="toArea"> Path were to end </param>
         private static IEnumerable<TaskMove> GetPath(AbstractArea fromArea, AbstractArea toArea) {
 
             if (fromArea != toArea) {
@@ -179,7 +176,7 @@ namespace RPG.Core {
             Queue<AbstractArea> areasToExplore = new();
             List<(AbstractArea area, int distance)> exploredAreas = new();
 
-            int disntace = 0;
+            int distance = 0;
             //Search from start
             areasToExplore.Enqueue(start);
             bool breakLoops = false;
@@ -191,7 +188,7 @@ namespace RPG.Core {
                 while (0 < areasLeftToExplore.Count) {
 
                     AbstractArea area = areasLeftToExplore.Dequeue();
-                    exploredAreas.Add((area, disntace));
+                    exploredAreas.Add((area, distance));
                     breakLoops = FindAndAddConnections(area, end, exploredAreas, ref areasToExplore);
                     if (breakLoops) {
                         break;
@@ -202,7 +199,7 @@ namespace RPG.Core {
                     break;
                 }
 
-                disntace++;
+                distance++;
             }
 
             //Remove the start since the characters doesn't need to enter it
@@ -217,7 +214,7 @@ namespace RPG.Core {
 
             Stack<(AbstractArea area, int distance)> foundPath = new();
             foundPath.Push(exploredAreas[0]);
-            disntace--;
+            distance--;
 
 
             foreach (var area_Distance in exploredAreas) {
@@ -225,8 +222,8 @@ namespace RPG.Core {
                     continue;
                 }
 
-                AbstractExploreArea[] connections = (area_Distance.area).AreaConnections.
-                    Where(z => exploredAreas.Contains((z, disntace))).      //Connection has been explored
+                AbstractExploreArea[] connections = (area_Distance.area).AreaConnector.AreaConnections.
+                    Where(z => exploredAreas.Contains((z, distance))).      //Connection has been explored
                     Where(w => !ContainsValue(foundPath, w)).               //Check if path has already been added
                     Where(x => x is AbstractExploreArea).                   //It has to be explore area
                     Select(y => y as AbstractExploreArea).ToArray();        //Transform info explore area
@@ -235,8 +232,8 @@ namespace RPG.Core {
                     continue;
                 }
 
-                foundPath.Push((connections[0], disntace));
-                disntace--;
+                foundPath.Push((connections[0], distance));
+                distance--;
             }
 
             while (0 < foundPath.Count) {
@@ -259,11 +256,11 @@ namespace RPG.Core {
             }
 
             //Queue all connections
-            if (area.AreaConnections.Length == 0) {
+            if (area.AreaConnector.AreaConnections.Length == 0) {
                 return false;
             }
 
-            AbstractArea[] filter = area.AreaConnections.
+            AbstractArea[] filter = area.AreaConnector.AreaConnections.
                 Where(x => !ContainsValue(exploredAreas, x)).
                 Where(y => y is AbstractExploreArea || y is AreaBuilding).ToArray();
 

@@ -12,7 +12,6 @@ namespace RPG.Creature {
         public string TaskPath => "Container";
 
         public IEnumerable<ITask> GetTaskOptions(Character askingCharacter) {
-
             foreach (var task in ability.GetTaskOptions(askingCharacter)) {
                 task.AddToPath(TaskPath);
                 yield return task;
